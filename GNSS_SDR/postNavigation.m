@@ -185,7 +185,7 @@ for currMeasNr = 1:fix((settings.msToProcess - max(subFrameStart)) / ...
         navSolutions.dt(currMeasNr) = xyzdt(4);
 
         % Update the satellites elevations vector
-        satElev = navSolutions.channel.el(:, currMeasNr);
+        satElev = navSolutions.channel.el(:, currMeasNr)';
 
         %=== Correct pseudorange measurements for clocks errors ===========
         navSolutions.channel.correctedP(activeChnList, currMeasNr) = ...

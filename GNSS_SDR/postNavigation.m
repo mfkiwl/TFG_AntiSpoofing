@@ -1,7 +1,7 @@
 function [navSolutions, eph] = postNavigation(trackResults, settings)
 %Function calculates navigation solutions for the receiver (pseudoranges,
 %positions). At the end it converts coordinates from the WGS84 system to
-%the UTM, geocentric or any additional coordinate system...
+%the UTM, geocentric or any additional coordinate system.
 %
 %[navSolutions, eph] = postNavigation(trackResults, settings)
 %

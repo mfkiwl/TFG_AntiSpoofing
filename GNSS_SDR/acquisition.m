@@ -50,7 +50,7 @@ function acqResults = acquisition(longSignal, settings)
 samplesPerCode = round(settings.samplingFreq / ...
                         (settings.codeFreqBasis / settings.codeLength));
 
-% Create two 1msec vectors of data to correlate with and one with zero DC
+% Takes the first 2 msec  and store them in different vectors and one with zero DC
 signal1 = longSignal(1 : samplesPerCode);
 signal2 = longSignal(samplesPerCode+1 : 2*samplesPerCode);
 
@@ -140,6 +140,7 @@ for PRN = settings.acqSatelliteList
     % The second peak is chosen not closer than 1 chip to the highest peak
     
     %--- Find the correlation peak and the carrier frequency --------------
+    %M = max(A,[],dim) returns the maximum element along dimension dim. For example, if A is a matrix, then max(A,[],2) is a column vector containing the maximum value of each row.
     [peakSize frequencyBinIndex] = max(max(results, [], 2));
 
     %--- Find code phase of the same correlation peak ---------------------

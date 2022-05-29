@@ -57,6 +57,11 @@ channel = repmat(channel, 1, settings.numberOfChannels);
 %% Copy acquisition results ===============================================
 
 %--- Sort peaks to find strongest signals, keep the peak index information
+% la funcio sort agafa el vector acqResults.peakMetric i ordena la seva
+% unica fila (per aixo el 2, sense el 2 ordena les columnes) en ordre
+% descendent. junk es un vector igual que acqResults.peakMetric amb els
+% valors ordenats (no ens interessa) i PRN indexes es un vector amb els
+% index dels satel.lits amb el peakMetric de gran a petit
 [junk, PRNindexes]          = sort(acqResults.peakMetric, 2, 'descend');
 
 %--- Load information about each satellite --------------------------------

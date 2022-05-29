@@ -69,7 +69,7 @@ settings.codeLength         = 1023;
 
 %% Acquisition settings ===================================================
 % Skips acquisition in the script postProcessing.m if set to 1
-settings.skipAcquisition    = 0;
+settings.skipAcquisition    = 1;
 % List of satellites to look for. Some satellites can be excluded to speed
 % up acquisition
 settings.acqSatelliteList   = 1:32;         %[PRN numbers]

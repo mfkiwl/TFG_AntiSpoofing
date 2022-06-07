@@ -55,26 +55,27 @@ settings.skipNumberOfBytes     = 0;
 % This is a "default" name of the data file (signal record) to be used in
 % the post-processing mode
 settings.fileName           = ...
-    'D:\TexBat_spoofedsignals\ds3.bin';%ds3
-    %'C:\Users\erics\OneDrive\Documentos\MATLAB\TFG\Borre\GNSS_signal_records\GPSdata-DiscreteComponents-fs38_192-if9_55.bin';
+    'C:\Users\erics\OneDrive\Documentos\MATLAB\TFG\Borre\GNSS_signal_records\GPSdata-DiscreteComponents-fs38_192-if9_55.bin';
+%     'D:\TexBat_spoofedsignals\ds3.bin';%ds3
+    
     %'D:\texbat_signals\cleanStatic.bin';%Clean static
     
 % Data type used to store one sample
-settings.dataType           = 'int16'; %texbat
-% settings.dataType           = 'int8';
+%settings.dataType           = 'int16'; %texbat
+settings.dataType           = 'int8';
 
 % Intermediate, sampling and code frequencies
 %*******************TEXBAT SIGNALS*****************************************
-settings.IF                 = 0;%1575420000
-settings.samplingFreq       = 25e6;     %[Hz]
-% % Define number of chips in a code period
-settings.codeFreqBasis      = 1.023e6;      %[Hz]
+% settings.IF                 = 0;%1575420000
+% settings.samplingFreq       = 25e6;     %[Hz]
+% % % Define number of chips in a code period
+% settings.codeFreqBasis      = 1.023e6;      %[Hz]
 %************************************************************************
 
 %******************GPSdata-DiscreteComponents-fs38_192-if9_55.bin********
-% settings.IF                 = 9.548e6;%[Hz]
-% settings.samplingFreq       = 38.192e6;     %[Hz]
-% settings.codeFreqBasis      = 1.023e6;      %[Hz]
+settings.IF                 = 9.548e6;%[Hz]
+settings.samplingFreq       = 38.192e6;     %[Hz]
+settings.codeFreqBasis      = 1.023e6;      %[Hz]
 %************************************************************************
 
 % Define number of chips in a code period
@@ -90,9 +91,9 @@ settings.acqSatelliteList   = 1:32;         %[PRN numbers]
 settings.acqSearchBand      = 14;
 % settings.acqSearchBand      = 14;           %[kHz]
 % Threshold for the signal presence decision rule
-settings.acqThreshold       = 1.4;%ds3
+% settings.acqThreshold       = 1.4;%ds3
 % settings.acqThreshold       = 1.7; %clean static
-% settings.acqThreshold       = 2.5;
+settings.acqThreshold       = 2.5;
 %% Tracking loops settings ================================================
 % Code tracking loop parameters
 settings.dllDampingRatio         = 0.7;

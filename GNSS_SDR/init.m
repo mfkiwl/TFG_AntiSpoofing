@@ -50,8 +50,8 @@ fprintf(['\n',...
 fprintf('                   -------------------------------\n\n');
 
 %% Initialize constants, settings =========================================
-settings = initSettings();
-
+%settings = initSettings();
+settings=initSettings_switch();
 %% Generate plot of raw data and ask if ready to start processing =========
 try
     fprintf('Probing data (%s)...\n', settings.fileName)

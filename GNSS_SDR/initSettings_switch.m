@@ -71,6 +71,7 @@ switch signal_file
         % Band around IF to search for satellite signal. Depends on max Doppler
         settings.acqSearchBand      = 14;
         % settings.acqSearchBand      = 14;           %[kHz]
+        settings.acqFreqStep=500; %[Hz]
         % Threshold for the signal presence decision rule
         settings.acqThreshold       = 2.5;
         %% Tracking loops settings ================================================
@@ -152,6 +153,7 @@ switch signal_file
         % Band around IF to search for satellite signal. Depends on max Doppler
         settings.acqSearchBand      = 14;
         % settings.acqSearchBand      = 14;           %[kHz]
+        settings.acqFreqStep=500; %[Hz]
         % Threshold for the signal presence decision rule
         settings.acqThreshold       = 1.5;
         %% Tracking loops settings ================================================
@@ -233,6 +235,7 @@ switch signal_file
         % Band around IF to search for satellite signal. Depends on max Doppler
         settings.acqSearchBand      = 14;
         % settings.acqSearchBand      = 14;           %[kHz]
+        settings.acqFreqStep=500; %[Hz]
         % Threshold for the signal presence decision rule
         settings.acqThreshold       = 1.4;
         %% Tracking loops settings ================================================

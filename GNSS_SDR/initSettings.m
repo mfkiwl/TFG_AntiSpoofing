@@ -89,11 +89,13 @@ settings.skipAcquisition    = 1;
 settings.acqSatelliteList   = 1:32;         %[PRN numbers]
 % Band around IF to search for satellite signal. Depends on max Doppler
 settings.acqSearchBand      = 14;
+settings.acqFreqStep=500; %[Hz]
 % settings.acqSearchBand      = 14;           %[kHz]
 % Threshold for the signal presence decision rule
-% settings.acqThreshold       = 1.4;%ds3
-% settings.acqThreshold       = 1.7; %clean static
 settings.acqThreshold       = 2.5;
+% Activates acqusition search grid plots or not. 1 (active), 0 (not active)
+settings.acqPlots=1; 
+
 %% Tracking loops settings ================================================
 % Code tracking loop parameters
 settings.dllDampingRatio         = 0.7;

@@ -4,7 +4,7 @@ function [acqResults] = acquisition_module(raw_signal_FI_2ms,settings)
 
 %It adapts the input data (which is the same input data as the original Borre software acquisition.m function) in order
 %to use the function pcps_acquisition (from NACC practises) which performs the pcps
-%acquisition for a given (single) satellite. By doing so, at a high point
+%acquisition for a given (single) satellite. By doing so, at a high-level point
 %of view, the input and the output of this function is the same as the
 %original Borre software acquisition.m function. However, it uses the
 %pcps_acquisition function since this function performs acquisition plots.
@@ -22,13 +22,17 @@ FreqStep=settings.acqFreqStep;
 samplesPerCode = round(settings.samplingFreq / ...
                         (settings.codeFreqBasis / settings.codeLength));
                     
-phasePoints = (0 : (2*samplesPerCode-1)) * 2 * pi * ts; %recall that the function input raw signal (centered at FI) contains 2ms
+phasePoints = (0 : (2*samplesPerCode-1)) * 2 * pi * Ts; %recall that the function input raw signal (centered at FI) contains 2ms
 
-raw_signal_BB_2ms = raw_signal_FI_2ms*exp(-1i*settings.FI*phasePoints);
+%raw_signal_BB_2ms = raw_signal_FI_2ms.*exp(-1i*settings.IF*phasePoints);
 
 %% Acquisition for each satellite
  for SV=1:1:32 
-     acqResults(1:SV)=pcps_acquisition_single_sat(raw_signal_BB_2ms, settings.samplingFreq, FreqMin, FreqMax, FreqStep, settings.threshold, SV, settings.acqPlot);
+     acqResults_one_sat=pcps_acquisition_single_sat(raw_signal_FI_2ms, settings, SV);
+     
+     acqResults.carrFreq(SV)=acqResults_one_sat.carrFreq;
+     acqResults.codePhase(SV)=acqResults_one_sat.codePhase;
+     acqResults.peakMetric(SV)=acqResults_one_sat.peakMetric;
  end
 end
 

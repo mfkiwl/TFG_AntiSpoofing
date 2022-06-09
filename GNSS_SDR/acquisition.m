@@ -1,4 +1,4 @@
-function acqResults = acquisition(longSignal, settings)
+function acqResults = acquisition(longSignal, settings, acqType,SatellitePresentList)
 %Function performs cold start acquisition on the collected "data". It
 %searches for GPS signals of all satellites, which are listed in field
 %"acqSatelliteList" in the settings structure. Function saves code phase
@@ -7,16 +7,27 @@ function acqResults = acquisition(longSignal, settings)
 %acqResults = acquisition(longSignal, settings)
 %
 %   Inputs:
-%       longSignal    - 11 ms of raw signal from the front-end 
-%       settings      - Receiver settings. Provides information about
-%                       sampling and intermediate frequencies and other
-%                       parameters including the list of the satellites to
-%                       be acquired.
+%               longSignal    - 11 ms of raw signal from the front-end 
+%               settings      - Receiver settings. Provides information about
+%                               sampling and intermediate frequencies and other
+%                               parameters including the list of the satellites to
+%                               be acquired.
+%               acqType      - Describes if it is the 'NORMAL' acquisition (looking
+%                               for present satellites) or 'APT' acquisition (looking for secondary peaks in only the present satellites alerting for spoofing).
+%                               For the 'APT' acquisition, previously it shall be
+%                               performed a 'NORMAL' acquisition that finds the
+%                               present satellites, as 'APT' acquisition will only
+%                               generate the grid for these present satellites (efficiency
+%                               purposes). 
+%       present_sat_PRN_list  - Vector containing the PRN of the present
+%                              satellites. Recall that the acqResults
+%                              (output of this function) has an attribute
+%                              that is a list of present satellites' PRN
 %   Outputs:
-%       acqResults    - Function saves code phases and frequencies of the 
-%                       detected signals in the "acqResults" structure. The
-%                       field "carrFreq" is set to 0 if the signal is not
-%                       detected for the given PRN number. 
+%               acqResults    - Function saves code phases and frequencies of the 
+%                               detected signals in the "acqResults" structure. The
+%                               field "carrFreq" is set to 0 if the signal is not
+%                               detected for the given PRN number. 
  
 %--------------------------------------------------------------------------
 %                           SoftGNSS v3.0
@@ -45,7 +56,6 @@ function acqResults = acquisition(longSignal, settings)
 %$Id: acquisition.m,v 1.1.2.12 2006/08/14 12:08:03 dpl Exp $
 
 %% Initialization =========================================================
-
 % Find number of samples per spreading code
 samplesPerCode = round(settings.samplingFreq / ...
                         (settings.codeFreqBasis / settings.codeLength));
@@ -84,12 +94,23 @@ acqResults.carrFreq     = zeros(1, 32);
 acqResults.codePhase    = zeros(1, 32);
 % Correlation peak ratios of the detected signals
 acqResults.peakMetric   = zeros(1, 32);
-
+acqResults.SatellitePresentList= [];
 fprintf('(');
 
-% Perform search for all listed PRN numbers ...
-for PRN = settings.acqSatelliteList
-
+% Depending on the acqType, the acquisition will be performed among all the possible satellites or only the present/visible ones.
+list_sat_to_acquire=zeros(1,32);
+switch acqType
+    case 'Normal'
+        list_sat_to_acquire=settings.acqSatelliteList;
+    case 'APT'
+        list_sat_to_acquire=SatellitePresentList;
+        c=c+1;
+    otherwise 
+        fprintf('ERROR: Incorrect Acquisition type (acqType) input parameter of the function acquisition.m');
+end
+    
+% for PRN = settings.acqSatelliteList
+for PRN = list_sat_to_acquire
 %% Correlate signals ======================================================   
     %--- Perform DFT of C/A code ------------------------------------------
     caCodeFreqDom = conj(fft(caCodesTable(PRN, :)));
@@ -134,6 +155,24 @@ for PRN = settings.acqSatelliteList
         end
         
     end % frqBinIndex = 1:numberOfFrqBins
+ %% plot the grid of the acquired acquisition search grids
+ 
+    if settings.acqInitialPlots==1 && (strcmp(acqType,'Normal')==1)
+        Td=0:1:(samplesPerCode-1);
+        figure;
+        mesh(Td,frqBins,results);
+        title(['PCPS ' acqType ' Acquisition grid for SV ID ', num2str(PRN)]);
+        xlabel('Code delay [samples]');
+        ylabel('Doppler freq [Hz]');
+    elseif settings.AptPlots==1 && (strcmp(acqType,'APT')==1)
+        
+        Td=0:1:(samplesPerCode-1);
+        figure;
+        mesh(Td,frqBins,results);
+        title([num2str(c) ' PCPS ' acqType ' Acquisition grid for SV ID ', num2str(PRN)]);
+        xlabel('Code delay [samples]');
+        ylabel('Doppler freq [Hz]');
+    end
 
 %% Look for correlation peaks in the results ==============================
     % Find the highest peak and compare it to the second highest peak
@@ -141,15 +180,15 @@ for PRN = settings.acqSatelliteList
     
     %--- Find the correlation peak and the carrier frequency --------------
     %M = max(A,[],dim) returns the maximum element along dimension dim. For example, if A is a matrix, then max(A,[],2) is a column vector containing the maximum value of each row.
-    [peakSize frequencyBinIndex] = max(max(results, [], 2));
+    [primaryPeakSize frequencyBinIndex] = max(max(results, [], 2));
 
     %--- Find code phase of the same correlation peak ---------------------
-    [peakSize codePhase] = max(max(results));
+    [primaryPeakSize primaryCodePhase] = max(max(results));
 
     %--- Find 1 chip wide C/A code phase exclude range around the peak ----
     samplesPerCodeChip   = round(settings.samplingFreq / settings.codeFreqBasis);
-    excludeRangeIndex1 = codePhase - samplesPerCodeChip;
-    excludeRangeIndex2 = codePhase + samplesPerCodeChip;
+    excludeRangeIndex1 = primaryCodePhase - samplesPerCodeChip;
+    excludeRangeIndex2 = primaryCodePhase + samplesPerCodeChip;
 
     %--- Correct C/A code phase exclude range if the range includes array
     %boundaries
@@ -166,14 +205,15 @@ for PRN = settings.acqSatelliteList
     end
 
     %--- Find the second highest correlation peak in the same freq. bin ---
-    secondPeakSize = max(results(frequencyBinIndex, codePhaseRange));
-
-    %--- Store result -----------------------------------------------------
-    acqResults.peakMetric(PRN) = peakSize/secondPeakSize;
+    [secondaryPeakSize secondaryPeakCodePhase] = max(results(frequencyBinIndex, codePhaseRange));
     
-    % If the result is above threshold, then there is a signal ...
-    if (peakSize/secondPeakSize) > settings.acqThreshold
+    %--- Store result -----------------------------------------------------
+    acqResults.peakMetric(PRN) = primaryPeakSize/secondaryPeakSize;
+    
 
+    % If the result is above threshold, then there is a signal ...
+    if (primaryPeakSize/secondaryPeakSize) > settings.acqThreshold
+       acqResults.SatellitePresentList=[acqResults.SatellitePresentList PRN];
 %% Fine resolution frequency search =======================================
         
         %--- Indicate PRN number of the detected signal -------------------
@@ -190,7 +230,7 @@ for PRN = settings.acqSatelliteList
         %--- Remove C/A code modulation from the original signal ----------
         % (Using detected C/A code phase)
         xCarrier = ...
-            signal0DC(codePhase:(codePhase + 10*samplesPerCode-1)) ...
+            signal0DC(primaryCodePhase:(primaryCodePhase + 10*samplesPerCode-1)) ...
             .* longCaCode;
         
         %--- Find the next highest power of two and increase by 8x --------
@@ -207,14 +247,20 @@ for PRN = settings.acqSatelliteList
         
         %--- Save properties of the detected satellite signal -------------
         acqResults.carrFreq(PRN)  = fftFreqBins(fftMaxIndex);
-        acqResults.codePhase(PRN) = codePhase;
+        acqResults.codePhase(PRN) = primaryCodePhase;
+        
+        %--- Indicate PRN number of the detected signal -------------------
+        fprintf('Acquired %02d with Doppler %d Hz, Code Phase %d Samples and Test statistics %d \n'...
+        , PRN, acqResults.carrFreq(PRN), acqResults.codePhase(PRN), acqResults.peakMetric(PRN));
     
     else
         %--- No signal with this PRN --------------------------------------
-        fprintf('. ');
+        %fprintf('. ');
     end   % if (peakSize/secondPeakSize) > settings.acqThreshold
     
 end    % for PRN = satelliteList
+%update the list of the visible satellites in the settings structure
 
 %=== Acquisition is over ==================================================
 fprintf(')\n');
+end

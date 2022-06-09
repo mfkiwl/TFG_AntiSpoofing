@@ -80,11 +80,14 @@ if (fid > 0)
         % Read data for acquisition. 11ms of signal are needed for the fine
         % frequency estimation
         data = fread(fid, 11*samplesPerCode, settings.dataType)';
-
+        
         %--- Do the acquisition -------------------------------------------
         disp ('   Acquiring satellites...');
-        acqResults = acquisition(data, settings);
-
+        acqType1='Normal';
+        acqResults = acquisition(data, settings,acqType1,[])
+%         acqResults = acquisition_module(raw_signal_FI_2ms,settings)
+%         acqType='APT';
+%         acqResults = acquisition(data, settings,acqType,acqResults1.SatellitePresentList)
         plotAcquisition(acqResults);
     end
 

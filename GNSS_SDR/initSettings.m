@@ -87,14 +87,16 @@ settings.skipAcquisition    = 1;
 % List of satellites to look for. Some satellites can be excluded to speed
 % up acquisition
 settings.acqSatelliteList   = 1:32;         %[PRN numbers]
+%List of satellites present/visible
+settings.acqSatellitePresentList   = zeros(1,32);         %[PRN numbers]
 % Band around IF to search for satellite signal. Depends on max Doppler
 settings.acqSearchBand      = 14;
 settings.acqFreqStep=500; %[Hz]
 % settings.acqSearchBand      = 14;           %[kHz]
 % Threshold for the signal presence decision rule
 settings.acqThreshold       = 2.5;
-% Activates acqusition search grid plots or not. 1 (active), 0 (not active)
-settings.acqPlots=1; 
+% Activates acqusition search grid plots or not in the first/initial acquisition. 1 (active), 0 (not active)
+settings.acqInitialPlots=1; 
 
 %% Tracking loops settings ================================================
 % Code tracking loop parameters
@@ -132,3 +134,14 @@ settings.plotTracking       = 1;            % 0 - Off
 
 settings.c                  = 299792458;    % The speed of light, [m/s]
 settings.startOffset        = 68.802;       %[ms] Initial sign. travel time
+
+%% APT detection settings ===========================================================
+%Indicates if the APT spoofing detection is ON (1) or OFF (0)
+settings.AptActive=1;
+%Indicates the period of the APT detection (time between detection checks)
+settings.AptPeriod=500; %[ms]
+%Activates acquisition search grid plots or not in the APT spoofing
+%detection. 1 (active), 0 (not active)
+settings.AptPlots=1;
+%Number of channels per satellite 
+settings.numberChannelsPerSat=2;

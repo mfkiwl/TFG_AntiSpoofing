@@ -146,7 +146,17 @@ for channelNr = 1:settings.numberOfChannels
 
         %=== Process the number of specified code periods =================
         for loopCnt =  1:codePeriods
-            
+            if settings.AptActive==1
+                if mod(loopCnt,settings.AptPeriod)==0
+%                     %To detect 2 peaks in the acquisition search grid it is
+%                     %used the acquisition.m function. This function
+%                     %receives as input 11ms of the FI-centered raw signal
+                    if (loopCnt/settings.AptPeriod==1)% The file only shall be opened the first time
+                        [fid1, message] = fopen(settings.fileName, 'rb');
+                    end
+                    succ = APT_detection_check(settings,fid1,[channel.PRN]);
+                 end
+            end
 %% GUI update -------------------------------------------------------------
             % The GUI is updated every 50ms. This way Matlab GUI is still
             % responsive enough. At the same time Matlab is not occupied
@@ -190,7 +200,7 @@ for channelNr = 1:settings.numberOfChannels
                 fclose(fid);
                 return
             end
-
+            
 %% Set up all the code phase tracking information -------------------------
             % Define index into early code vector
             tcode       = (remCodePhase-earlyLateSpc) : ...

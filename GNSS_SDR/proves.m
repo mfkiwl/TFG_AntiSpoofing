@@ -52,20 +52,39 @@
 % [rawSignal2, samplesRead] = fread(fid1, blksize, dataType);
 % rawSignal2
 %%
-fileName='C:\Users\erics\OneDrive\Documentos\MATLAB\TFG\Borre\GNSS_signal_records\GPSdata-DiscreteComponents-fs38_192-if9_55.bin';
-[fid1, message] = fopen(fileName, 'rb');
-blksize=10;
-dataType='int8';
-[rawSignal, samplesRead] = fread(fid1, blksize, dataType);
-rawSignal
-
-
-fileName='C:\Users\erics\OneDrive\Documentos\MATLAB\TFG\Borre\GNSS_signal_records\GPSdata-DiscreteComponents-fs38_192-if9_55.bin';
-[fid, message] = fopen(fileName, 'rb');
-[rawSignal2, samplesRead] = fread(fid, 5, dataType);
-rawSignal2
-rawSignal2(1:2)
-%fseek(fid, 5, 'bof');
-[rawSignal3, samplesRead] = fread(fid, 5, dataType);
-rawSignal3
-rawSignal3(1:2)
+% fileName='C:\Users\erics\OneDrive\Documentos\MATLAB\TFG\Borre\GNSS_signal_records\GPSdata-DiscreteComponents-fs38_192-if9_55.bin';
+% [fid1, message] = fopen(fileName, 'rb');
+% blksize=10;
+% dataType='int8';
+% [rawSignal, samplesRead] = fread(fid1, blksize, dataType);
+% rawSignal
+% 
+% 
+% fileName='C:\Users\erics\OneDrive\Documentos\MATLAB\TFG\Borre\GNSS_signal_records\GPSdata-DiscreteComponents-fs38_192-if9_55.bin';
+% [fid, message] = fopen(fileName, 'rb');
+% [rawSignal2, samplesRead] = fread(fid, 5, dataType);
+% rawSignal2
+% rawSignal2(1:2)
+% %fseek(fid, 5, 'bof');
+% [rawSignal3, samplesRead] = fread(fid, 5, dataType);
+% rawSignal3
+% rawSignal3(1:2)
+%%
+numSat=3
+channelPerSat=1
+channel=[]
+a=0;
+for i=1:numSat
+    
+    for j=1:channelPerSat
+        
+        channel=[channel; a];
+    end
+    a=a+1;
+end
+channel
+%%
+a='ATP';
+if a=='ATP'
+    b=2
+end

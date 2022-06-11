@@ -52,7 +52,25 @@ channel.status          = '-';  % Mode/status of the tracking channel
                                 % "T" - Tracking state
 
 %--- Copy initial data to all channels ------------------------------------
-channel = repmat(channel, 1, settings.numberOfChannels);
+% channel will have numSatToProcess*numberChannelsPerSat rows. Let's
+% find numSatToProcess and numberChannelsPerSat
+
+% How many satellites will be processed? It will be processed the detected satellites. However, if the number of detected satellites exceeds the 
+% maximum number of satellites to process (settings.maxNumSatToProcess), some detected satellites will be dismissed. 
+numSatToProcess=min([settings.maxNumSatToProcess, sum(acqResults.carrFreq > 0)]);
+
+%if APT spoofing detection is active, it will be allocated more than one
+%channel (specified in settings.numberChannelsPerSat) per satellite. In
+%case APT spoofing detection is not active, only one channel per satellite
+%is enough.
+numberChannelsPerSat=0;
+if settings.AptActive==1
+    numberChannelsPerSat=settings.AptNumberChannelsPerSat;
+else
+    numberChannelsPerSat=1;
+end                               
+
+channel = repmat(channel, 1, numSatToProcess*numberChannelsPerSat);
 
 %% Copy acquisition results ===============================================
 
@@ -64,14 +82,20 @@ channel = repmat(channel, 1, settings.numberOfChannels);
 % index dels satel.lits amb el peakMetric de gran a petit
 [junk, PRNindexes]          = sort(acqResults.peakMetric, 2, 'descend');
 
-%--- Load information about each satellite --------------------------------
-% Maximum number of initialized channels is number of detected signals, but
-% not more as the number of channels specified in the settings.
-for ii = 1:min([settings.numberOfChannels, sum(acqResults.carrFreq > 0)])
-    channel(ii).PRN          = PRNindexes(ii);
-    channel(ii).acquiredFreq = acqResults.carrFreq(PRNindexes(ii));
-    channel(ii).codePhase    = acqResults.codePhase(PRNindexes(ii));
-    
-    % Set tracking into mode (there can be more modes if needed e.g. pull-in)
-    channel(ii).status       = 'T';
+
+ %--- Load information about each satellite --------------------------------
+channel_count=1;
+for i = 1:numSatToProcess
+    for j =1:numberChannelsPerSat
+        channel(channel_count).PRN          = PRNindexes(i);
+        channel(channel_count).acquiredFreq = acqResults.carrFreq(PRNindexes(i));
+        channel(channel_count).codePhase    = acqResults.codePhase(PRNindexes(i));
+        if (j==1)
+            % Set tracking into mode (there can be more modes if needed e.g. pull-in)
+            channel(channel_count).status       = 'T';  
+        else
+            channel(channel_count).status       = 'APT';  
+        end
+        channel_count=channel_count+1;
+    end
 end

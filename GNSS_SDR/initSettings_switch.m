@@ -36,8 +36,10 @@ switch signal_file
         % below - in Nav parameters) to ensure nav subframes are provided
         settings.msToProcess        = 37000;        %[ms]
 
-        % Number of channels to be used for signal processing
-        settings.numberOfChannels   = 8;
+        % Maximum number of satellites to process. For each satellite, it
+        % will be assigned settings.AptNumberChannelsPerSat number of
+        % channels for each satellite to process
+        settings.maxNumSatToProcess   = 8; %anteriorment es deia numberOfChannels
 
         % Move the starting point of processing. Can be used to start the signal
         % processing at any point in the data record (e.g. for long records). fseek
@@ -118,12 +120,12 @@ switch signal_file
         %Indicates if the APT spoofing detection is ON (1) or OFF (0)
         settings.AptActive=1;
         %Indicates the period of the APT detection (time between detection checks)
-        settings.AptPeriod=500; %[ms]
+        settings.AptPeriod=7400; %[ms]
         %Activates acquisition search grid plots or not in the APT spoofing
         %detection. 1 (active), 0 (not active)
         settings.AptPlots=1;
         %Number of channels per satellite 
-        settings.numberChannelsPerSat=2;
+        settings.AptNumberChannelsPerSat=2;
 
     case 2%'TEXBAT_cleanStatic'
         %% Processing settings ====================================================
@@ -132,7 +134,7 @@ switch signal_file
         settings.msToProcess        = 37000;        %[ms]
 
         % Number of channels to be used for signal processing
-        settings.numberOfChannels   = 8;
+        settings.maxNumSatToProcess   = 8;
 
         % Move the starting point of processing. Can be used to start the signal
         % processing at any point in the data record (e.g. for long records). fseek
@@ -220,7 +222,7 @@ switch signal_file
         %detection. 1 (active), 0 (not active)
         settings.AptPlots=1;
         %Number of channels per satellite 
-        settings.numberChannelsPerSat=2;
+        settings.AptNumberChannelsPerSat=2;
 
     case 3%'TEXBAT_ds3'
         %% Processing settings ====================================================
@@ -229,7 +231,7 @@ switch signal_file
         settings.msToProcess        = 37000;        %[ms]
 
         % Number of channels to be used for signal processing
-        settings.numberOfChannels   = 8;
+        settings.maxNumSatToProcess   = 8;
 
         % Move the starting point of processing. Can be used to start the signal
         % processing at any point in the data record (e.g. for long records). fseek
@@ -317,7 +319,7 @@ switch signal_file
         %detection. 1 (active), 0 (not active)
         settings.AptPlots=1;
         %Number of channels per satellite 
-        settings.numberChannelsPerSat=2;
+        settings.AptNumberChannelsPerSat=2;
     otherwise
         disp('Error, the input signal file name is not contemplated, either choose another signal file or create a case for this specific scenario')
 end

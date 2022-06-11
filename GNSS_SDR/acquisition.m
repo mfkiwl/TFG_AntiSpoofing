@@ -97,14 +97,15 @@ acqResults.peakMetric   = zeros(1, 32);
 acqResults.SatellitePresentList= [];
 fprintf('(');
 
-% Depending on the acqType, the acquisition will be performed among all the possible satellites or only the present/visible ones.
+% Depending on the acqType, the acquisition will be performed among all the
+% possible satellites(Normal acquisition) or only the present/visible ones
+% (APT)
 list_sat_to_acquire=zeros(1,32);
 switch acqType
     case 'Normal'
         list_sat_to_acquire=settings.acqSatelliteList;
     case 'APT'
         list_sat_to_acquire=SatellitePresentList;
-        c=c+1;
     otherwise 
         fprintf('ERROR: Incorrect Acquisition type (acqType) input parameter of the function acquisition.m');
 end
@@ -169,7 +170,7 @@ for PRN = list_sat_to_acquire
         Td=0:1:(samplesPerCode-1);
         figure;
         mesh(Td,frqBins,results);
-        title([num2str(c) ' PCPS ' acqType ' Acquisition grid for SV ID ', num2str(PRN)]);
+        title(['PCPS ' acqType ' Acquisition grid for SV ID ', num2str(PRN)]);
         xlabel('Code delay [samples]');
         ylabel('Doppler freq [Hz]');
     end

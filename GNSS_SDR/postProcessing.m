@@ -131,9 +131,10 @@ if (fid > 0)
     disp('   Processing is complete for this data block');
 
 %% Plot all results ===================================================
+    numberChannels=sum(size(channel.PRN,1));
     disp ('   Ploting results...');
     if settings.plotTracking
-        plotTracking(1:settings.numberOfChannels, trackResults, settings);
+        plotTracking(1:numberChannels, trackResults, settings);
     end
 
     plotNavigation(navSolutions, settings);

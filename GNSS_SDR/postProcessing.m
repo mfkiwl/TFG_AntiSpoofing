@@ -57,22 +57,16 @@
 %% Initialization =========================================================
 disp ('Starting processing...');
 
-[fid, message] = fopen(settings.fileName, 'rb');
+[fid1, message] = fopen(settings.fileName, 'rb');
 
 %If success, then process the data
-if (fid > 0)
+if (fid1 > 0)
     
     % Move the starting point of processing. Can be used to start the
     % signal processing at any point in the data record (e.g. good for long
     % records or for signal processing in blocks).
-    skipNumberOfBytes=settings.samplingFreq*settings.fileStartingReadingSecond;
-    switch settings.dataFormat
-        case 'byte'
-            skipNumberOfBytes=settings.samplingFreq*settings.fileStartingReadingSecond;
-        case 'ishort'
-            skipNumberOfBytes=2*settings.samplingFreq*settings.fileStartingReadingSecond;
-    end
-    fseek(fid, skipNumberOfBytes, 'bof');
+
+    
 
 %% Acquisition ============================================================
 
@@ -80,20 +74,24 @@ if (fid > 0)
     % acqResults does not exist.
     if ((settings.skipAcquisition == 0) || ~exist('acqResults', 'var'))
         
+        % Read data for acquisition. 11ms of signal are needed for the fine
+        % frequency estimation
+        openFile=1;
+        fileID=0; %it does not matter, as the signal is in openFile mode it will ignore this parameter
+        numOfCodes=11;
         % Find number of samples per spreading code
         samplesPerCode = round(settings.samplingFreq / ...
                            (settings.codeFreqBasis / settings.codeLength));
+        numSamples=numOfCodes*samplesPerCode;
         
-        % Read data for acquisition. 11ms of signal are needed for the fine
-        % frequency estimation
-        numOfCodes=11;
-        data = readSignalFile(fid,settings,numOfCodes*samplesPerCode);
+        [data,fid] = readSignalFile(fileID,settings,numSamples,openFile);
+        %data = readSignalFile(fid,settings,numOfCodes*samplesPerCode);
         %data = fread(fid, 11*samplesPerCode, settings.dataType)';
         
         %--- Do the acquisition -------------------------------------------
         disp ('   Acquiring satellites...');
         acqType1='Normal';
-        acqResults = acquisition(data, settings,acqType1,[])
+        acqResults = acquisition(data, settings,acqType1,[]);
 %         acqResults = acquisition_module(raw_signal_FI_2ms,settings)
 %         acqType='APT';
 %         acqResults = acquisition(data, settings,acqType,acqResults1.SatellitePresentList)
@@ -135,7 +133,7 @@ if (fid > 0)
 
 %% Calculate navigation solutions =========================================
     disp('   Calculating navigation solutions...');
-    %navSolutions = postNavigation(trackResults, settings);
+    navSolutions = postNavigation(trackResults, settings);
 
     disp('   Processing is complete for this data block');
 

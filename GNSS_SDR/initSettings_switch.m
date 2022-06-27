@@ -87,7 +87,7 @@ switch signal_file
         % Activates acqusition search grid plots or not. 1 (active), 0 (not active)
         settings.acqInitialPlots=0; 
         %Activates acquisition fine frequency search (1) or not (0).
-        settings.acqFineFreqSearch=0;
+        settings.acqFineFreqSearch=1;
         %% Tracking loops settings ================================================
         % Code tracking loop parameters
         settings.dllDampingRatio         = 0.7;
@@ -354,7 +354,7 @@ switch signal_file
         %% Processing settings ====================================================
         % Number of milliseconds to be processed used 36000 + any transients (see
         % below - in Nav parameters) to ensure nav subframes are provided
-        settings.msToProcess        = 37000;        %[ms]
+        settings.msToProcess        = 10000;        %[ms]
 
         % Number of channels to be used for signal processing
         settings.maxNumSatToProcess   = 8;
@@ -365,7 +365,7 @@ switch signal_file
         % based only. 
         %Indicates at which file second the file is started to be read. Similar to the prior settings.skipNumberOfBytes but more intuitive. 
         %(settings.skipNumberOfBytes=settings.samplingFreq*settings.fileStartingReadingSecond)
-        settings.fileStartingReadingSecond=90; %0.00000004
+        settings.fileStartingReadingSecond=150; %0.00000004
         %settings.skipNumberOfBytes=0;
         
 
@@ -447,7 +447,7 @@ switch signal_file
         %Indicates if the APT spoofing detection is ON (1) or OFF (0)
         settings.AptActive=1;
         %Indicates the period of the APT detection (time between detection checks)
-        settings.AptPeriod=3700; %[ms]
+        settings.AptPeriod=3000; %[ms]
         %Activates acquisition search grid plots or not in the APT spoofing
         %detection. 1 (active), 0 (not active)
         settings.AptPlots=1;

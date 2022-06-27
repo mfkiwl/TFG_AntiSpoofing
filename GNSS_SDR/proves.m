@@ -52,21 +52,26 @@ blksize=2;
 [rawSignal2, samplesRead] = fread(fid1, blksize, dataType);
 rawSignal2
 %%
+%Abro el archivo y leo las primeras 25 muestras
 fileName='D:\TexBat_spoofedsignals\ds3.bin';
 [fid1, message] = fopen(fileName, 'rb');
-blksize=50;
-dataType='int8';
+blksize=30;
+dataType='int16';
 [rawSignal, samplesRead] = fread(fid1, blksize, dataType);
 rawSignal
 
-
+%Vuelvo a abrir el archivo de nuevo y empiezo a leer a partir de la segunda
+%muestra (me salto 1B). Leo dos grupos de 10 muestras consecutivos.
 fileName='D:\TexBat_spoofedsignals\ds3.bin';
 [fid, message] = fopen(fileName, 'rb');
 fseek(fid, 1, 'bof');
-[rawSignal3, samplesRead] = fread(fid, 10, dataType);
-rawSignal3
-[rawSignal4, samplesRead] = fread(fid, 10, dataType);
-rawSignal4
+ftell(fid)
+[rawSignal_skip_1, samplesRead] = fread(fid, 10, dataType);
+rawSignal_skip_1
+ftell(fid)
+[rawSignal4_skip_2, samplesRead] = fread(fid, 10, dataType);
+rawSignal4_skip_2
+
 %CONCLUSIÓ: NUMBERBYTESTOSKIP (IN THIS CASE 1) CORRESPONDS TO THE NUMBER OF
 %SAMPLES TO SKIP
 %%
@@ -165,3 +170,23 @@ acqResults.codePhase(2,PRN) =secondaryPeakCodePhase;
 for i=1:2:16
     i
 end
+%%
+duration=0.000001;
+start_time=0.00000008;%0.00000004
+texbat=3;
+
+sample_rate=25000000;%Hz
+number_samples=ceil(duration*sample_rate);% number of samples to return
+count=2*number_samples;%number of values to read (I & Q are interleaved)
+point_to_begin=2*ceil(start_time*sample_rate)*2;%pointer to first value x2 for
+skipIQSamples=3;
+if texbat~=3;error('Only scenario 3 at this point');end;
+fid=fopen('D:\TexBat_spoofedsignals\ds3.bin','r'); % open the file
+fseek(fid,point_to_begin , 'bof');% position the start
+%fseek(fid, skipIQSamples*4, 'bof');% position the start
+ftell(fid)
+s=fread(fid,count,'int16')';% read in Is and Qs
+fclose(fid);
+samples=s(1:2:count-1)+j*s(2:2:count) % Convert and return complex form
+
+a=1;

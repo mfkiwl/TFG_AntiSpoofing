@@ -114,14 +114,11 @@ for channelNr = 1:numberChannels% 1:settings.numberOfChannels
     %                     %used the acquisition.m function. This function
     %                     %receives as input 11ms of the FI-centered raw signal
                     if (loopCnt/settings.AptPeriod==1)% The file only shall be opened the first time
-                        [fid1, message] = fopen(settings.fileName, 'rb');
-                        switch settings.dataFormat
-                            case 'byte'
-                                skipNumberOfBytes=settings.samplingFreq*settings.fileStartingReadingSecond;
-                            case 'ishort'
-                                skipNumberOfBytes=2*settings.samplingFreq*settings.fileStartingReadingSecond;
-                        end
-                        fseek(fid1, skipNumberOfBytes, 'bof');
+                        openFile=1;
+                        fileID=0;
+                    else
+                        openFile=0;
+     
                     end
                     %%
                     %-----------------Acquisition of all 32 satellites in
@@ -141,7 +138,7 @@ for channelNr = 1:numberChannels% 1:settings.numberOfChannels
 %                     plotAcquisition(acqResults);
 
                     %---------------Acquisition of the visible satellites
-                    succ = APT_detection_check(settings,fid1,channel(channelNr).PRN);
+                    fileID = APT_detection_check(settings,fileID,channel(channelNr).PRN,openFile);
                 end
             end
             trackResults(channelNr).PRN     = channel(channelNr).PRN;

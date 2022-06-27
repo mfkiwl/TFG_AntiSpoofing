@@ -55,7 +55,7 @@ settings=initSettings_switch();
 %% Generate plot of raw data and ask if ready to start processing =========
 try
     fprintf('Probing data (%s)...\n', settings.fileName)
-    probeData(settings);
+    %probeData(settings);
 catch
     % There was an error, print it and exit
     errStruct = lasterror;

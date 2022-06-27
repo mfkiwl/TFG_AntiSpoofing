@@ -65,7 +65,14 @@ if (fid > 0)
     % Move the starting point of processing. Can be used to start the
     % signal processing at any point in the data record (e.g. good for long
     % records or for signal processing in blocks).
-    fseek(fid, settings.skipNumberOfBytes, 'bof');
+    skipNumberOfBytes=settings.samplingFreq*settings.fileStartingReadingSecond;
+    switch settings.dataFormat
+        case 'byte'
+            skipNumberOfBytes=settings.samplingFreq*settings.fileStartingReadingSecond;
+        case 'ishort'
+            skipNumberOfBytes=2*settings.samplingFreq*settings.fileStartingReadingSecond;
+    end
+    fseek(fid, skipNumberOfBytes, 'bof');
 
 %% Acquisition ============================================================
 
@@ -79,7 +86,9 @@ if (fid > 0)
         
         % Read data for acquisition. 11ms of signal are needed for the fine
         % frequency estimation
-        data = fread(fid, 11*samplesPerCode, settings.dataType)';
+        numOfCodes=11;
+        data = readSignalFile(fid,settings,numOfCodes*samplesPerCode);
+        %data = fread(fid, 11*samplesPerCode, settings.dataType)';
         
         %--- Do the acquisition -------------------------------------------
         disp ('   Acquiring satellites...');
@@ -95,7 +104,7 @@ if (fid > 0)
 
     % Start further processing only if a GNSS signal was acquired (the
     % field FREQUENCY will be set to 0 for all not acquired signals)
-    if (any(acqResults.carrFreq))
+    if (any(acqResults.carrFreq(1,:)))
         channel = preRun(acqResults, settings);
         showChannelStatus(channel, settings);
     else
@@ -126,7 +135,7 @@ if (fid > 0)
 
 %% Calculate navigation solutions =========================================
     disp('   Calculating navigation solutions...');
-    navSolutions = postNavigation(trackResults, settings);
+    %navSolutions = postNavigation(trackResults, settings);
 
     disp('   Processing is complete for this data block');
 

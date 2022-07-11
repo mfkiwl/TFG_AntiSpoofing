@@ -32,7 +32,7 @@ switch settings.dataFormat
         numSamples=2*numSamples;%number of values to read (I & Q are interleaved)
         s=fread(fid,numSamples,'int16')';% read in Is and Qs
         %fclose(fid);
-        ftell(fid)
+        %ftell(fid)
         data=s(1:2:numSamples-1)+j*s(2:2:numSamples); % Convert and return complex form
     otherwise
         data=[];

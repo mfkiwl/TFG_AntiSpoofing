@@ -83,7 +83,6 @@ if (fid1 > 0)
         samplesPerCode = round(settings.samplingFreq / ...
                            (settings.codeFreqBasis / settings.codeLength));
         numSamples=numOfCodes*samplesPerCode;
-        
         [data,fid] = readSignalFile(fileID,settings,numSamples,openFile);
         %data = readSignalFile(fid,settings,numOfCodes*samplesPerCode);
         %data = fread(fid, 11*samplesPerCode, settings.dataType)';
@@ -133,12 +132,14 @@ if (fid1 > 0)
 
 %% Calculate navigation solutions =========================================
     disp('   Calculating navigation solutions...');
-    navSolutions = postNavigation(trackResults, settings);
+    %navSolutions = postNavigation(trackResults, settings);
 
     disp('   Processing is complete for this data block');
-
+    
+    
 %% Plot all results ===================================================
     numberChannels=sum(size(channel.PRN,1));
+    trackResults_T=trackResults(1:settings.AptNumberChannelsPerSat:numberChannels);
     disp ('   Ploting results...');
     if settings.plotTracking
         plotTracking(1:numberChannels, trackResults, settings);

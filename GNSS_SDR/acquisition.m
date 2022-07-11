@@ -64,7 +64,10 @@ samplesPerCode = round(settings.samplingFreq / ...
 signal1 = longSignal(1 : samplesPerCode);
 signal2 = longSignal(samplesPerCode+1 : 2*samplesPerCode);
 
-signal0DC = longSignal - mean(longSignal); 
+ 
+signal0DC = longSignal;
+
+% signal0DC = longSignal - mean(longSignal);
 
 % Find sampling period
 ts = 1 / settings.samplingFreq;
@@ -73,7 +76,7 @@ ts = 1 / settings.samplingFreq;
 phasePoints = (0 : (samplesPerCode-1)) * 2 * pi * ts;
 
 % Number of the frequency bins for the given acquisition band (500Hz steps)
-numberOfFrqBins = round(settings.acqSearchBand * 2) + 1;
+numberOfFrqBins = round((settings.acqSearchBand *1000)/settings.acqFreqStep) + 1;
 
 % Generate all C/A codes and sample them according to the sampling freq.
 caCodesTable = makeCaTable(settings);
@@ -122,7 +125,7 @@ for PRN = list_sat_to_acquire
         %--- Generate carrier wave frequency grid (0.5kHz step) -----------
         frqBins(frqBinIndex) = settings.IF - ...
                                (settings.acqSearchBand/2) * 1000 + ...
-                               0.5e3 * (frqBinIndex - 1);
+                               settings.acqFreqStep * (frqBinIndex - 1);
 
         %
         switch settings.dataFormat
@@ -182,13 +185,37 @@ for PRN = list_sat_to_acquire
         title(['PCPS ' acqType ' Acquisition grid for SV ID ', num2str(PRN)]);
         xlabel('Code delay [samples]');
         ylabel('Doppler freq [Hz]');
+        
     elseif settings.AptPlots==1 && (strcmp(acqType,'APT')==1)
         Td=0:1:(samplesPerCode-1);
-        figure;
+        
+        if settings.AptShowPlots==0
+            f=figure;
+            set(gcf, 'Units', 'Normalized', 'OuterPosition', [0 0 1 1]);
+            
+%             f=figure
+%             frame_h = get(handle(gcf),'JavaFrame');
+%             set(frame_h,'Maximized',1);
+            set(f, 'visible', 'off');
+            
+        else
+            f=figure
+        end
+        
         mesh(Td,frqBins,results);
-        title(['PCPS ' acqType ' Acquisition grid for SV ID ', num2str(PRN)]);
+        titol=['PCPS ' acqType ' Acquisition grid for SV ID ', num2str(PRN) ' (', datestr(datetime('now')) ')'];
+%         data_string=strsplit(datestr(datetime('now')))
+%         titol_=['PCPS_' acqType '_PRN_', num2str(PRN) '_(', cell2mat(split(datestr(datetime('now')),' ',2)) ')'];
+        titol_=['PCPS_' acqType '_PRN_', num2str(PRN) '_(', strrep(strrep(datestr(now), ':', '-'),' ','-'), ')'];
+        title(titol);
         xlabel('Code delay [samples]');
         ylabel('Doppler freq [Hz]');
+        
+        if settings.AptSavePlots==1
+            %set(f,'WindowState','fullscreen');
+            saveas(f,['C:\Users\erics\OneDrive\Documentos\MATLAB\TFG\Borre\Images\' titol_ '.png']); %gcf stands for the actual figure
+        end
+        
     end
 
 %% Look for correlation peaks in the results ==============================
@@ -289,7 +316,8 @@ for PRN = list_sat_to_acquire
                 %--- Compute the magnitude of the FFT, find maximum and the
                 %associated carrier frequency 
                 fftxc = abs(fft(xCarrier, fftNumPts)); 
-
+                %fd_axis=-7000+settings.FI:14000/length(fftxc):7000-14000/length(fftxc)+settings.FI;
+                %plot(fftxc);
                 uniqFftPts = ceil((fftNumPts + 1) / 2);
                 [fftMax, fftMaxIndex] = max(fftxc(5 : uniqFftPts-5));
 

@@ -14,7 +14,7 @@ numSamples=settings.AptPeriod*samplesPerCode;
 %----------Read Signal File------------------------------------------------
 %raw_signal_AptPeriod_long = fread(fid1, settings.AptPeriod*samplesPerCode, settings.dataType)'; %settings.AptPeriod corresponds to the ms between apt check and samplesPercode, as 1 code=1ms, correspond to the samples per code. the multiplication is the samples between apt check
 [raw_signal_AptPeriod_long fileID]=readSignalFile(fid1,settings,numSamples,openFile);
-ftell(fileID)
+%ftell(fileID)
 raw_signal_11ms=raw_signal_AptPeriod_long(1:11*samplesPerCode);
 
 %% Perform APT acquisition

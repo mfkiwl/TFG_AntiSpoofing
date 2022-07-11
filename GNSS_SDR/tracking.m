@@ -109,11 +109,11 @@ for channelNr = 1:numberChannels% 1:settings.numberOfChannels
     switch channel(channelNr).status
         case 'APT'
             for loopCnt =  1:codePeriods
-                if mod(loopCnt,settings.AptPeriod)==0
+                if mod(loopCnt,settings.AptPeriod)==0 || (loopCnt ==1)
     %                     %To detect 2 peaks in the acquisition search grid it is
     %                     %used the acquisition.m function. This function
     %                     %receives as input 11ms of the FI-centered raw signal
-                    if (loopCnt/settings.AptPeriod==1)% The file only shall be opened the first time
+                    if (loopCnt==1)% The file only shall be opened the first time
                         openFile=1;
                         fileID=0;
                     else
@@ -130,7 +130,7 @@ for channelNr = 1:numberChannels% 1:settings.numberOfChannels
 %                            (settings.codeFreqBasis / settings.codeLength));
 % 
 %                     numSamples=settings.AptPeriod*samplesPerCode;            
-%                     raw_signal_AptPeriod_long=readSignalFile(fid1,settings,numSamples);
+%                     raw_signal_AptPeriod_long=readSignalFile(fileID,settings,numSamples,openFile);
 %                     raw_signal_11ms=raw_signal_AptPeriod_long(1:11*samplesPerCode);
 % 
 %                     acqType1='Normal';

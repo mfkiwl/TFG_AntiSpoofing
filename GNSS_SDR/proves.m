@@ -171,8 +171,8 @@ for i=1:2:16
     i
 end
 %%
-duration=0.000001;
-start_time=0.00000008;%0.00000004
+duration=0.00000004*2;
+start_time=0;%0.00000004
 texbat=3;
 
 sample_rate=25000000;%Hz
@@ -186,7 +186,17 @@ fseek(fid,point_to_begin , 'bof');% position the start
 %fseek(fid, skipIQSamples*4, 'bof');% position the start
 ftell(fid)
 s=fread(fid,count,'int16')';% read in Is and Qs
-fclose(fid);
+ftell(fid)
+%fclose(fid);
 samples=s(1:2:count-1)+j*s(2:2:count) % Convert and return complex form
 
+r=fread(fid,count,'int16')';% read in Is and Qs
+ftell(fid)
+%fclose(fid);
+samples_r=r(1:2:count-1)+j*r(2:2:count) % Convert and return complex form
+
+t=fread(fid,count,'int16')';% read in Is and Qs
+ftell(fid)
+%fclose(fid);
+samples_t=t(1:2:count-1)+j*t(2:2:count) % Convert and return complex form
 a=1;

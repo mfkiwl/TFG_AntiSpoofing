@@ -26,6 +26,7 @@ disp('1) Borre_DiscreteComponents')
 disp('2) TEXBAT_cleanStatic')
 disp('3) TEXBAT_ds2')
 disp('4) TEXBAT_ds3')
+disp('7) TEXBAT_ds7')
 prompt='Choose the signal by entering the number: ';
 signal_file=input(prompt);
 
@@ -132,6 +133,12 @@ switch signal_file
         %Activates acquisition search grid plots or not in the APT spoofing
         %detection. 1 (active), 0 (not active)
         settings.AptPlots=1;
+        %Although settings.AptPlots is active, you might not desire to
+        %display them, for instance, if you want to save them directly without
+        %displaying them.
+        settings.AptShowPlots=0;
+        %Saves plots in C:\Users\erics\OneDrive\Documentos\MATLAB\TFG\Borre\Images
+        settings.AptSavePlots=0;
         %Number of channels per satellite 
         settings.AptNumberChannelsPerSat=2;
         %APT threshold. How many times second peak shall be bigger than
@@ -142,7 +149,7 @@ switch signal_file
         %% Processing settings ====================================================
         % Number of milliseconds to be processed used 36000 + any transients (see
         % below - in Nav parameters) to ensure nav subframes are provided
-        settings.msToProcess        = 37000;        %[ms]
+        settings.msToProcess        = 10000;        %[ms]
 
         % Number of channels to be used for signal processing
         settings.maxNumSatToProcess   = 8;
@@ -153,7 +160,7 @@ switch signal_file
         % based only. 
         %Indicates at which file second the file is started to be read. Similar to the prior settings.skipNumberOfBytes but more intuitive. 
         %(settings.skipNumberOfBytes=settings.samplingFreq*settings.fileStartingReadingSecond)
-        settings.fileStartingReadingSecond=0; 
+        settings.fileStartingReadingSecond=100; 
         %settings.skipNumberOfBytes     = 0;
 
         %% Raw signal file name and other parameter ===============================
@@ -186,13 +193,13 @@ switch signal_file
         % Band around IF to search for satellite signal. Depends on max Doppler
         settings.acqSearchBand      = 14;
         % settings.acqSearchBand      = 14;           %[kHz]
-        settings.acqFreqStep=500; %[Hz]
+        settings.acqFreqStep=100; %[Hz]
         % Threshold for the signal presence decision rule
         settings.acqThreshold       = 3.5;
         % Activates acqusition search grid plots or not. 1 (active), 0 (not active)
         settings.acqInitialPlots=0; 
         %Activates acquisition fine frequency search (1) or not (0).
-        settings.acqFineFreqSearch=0;
+        settings.acqFineFreqSearch=1;
         %% Tracking loops settings ================================================
         % Code tracking loop parameters
         settings.dllDampingRatio         = 0.7;
@@ -234,10 +241,16 @@ switch signal_file
         %Indicates if the APT spoofing detection is ON (1) or OFF (0)
         settings.AptActive=1;
         %Indicates the period of the APT detection (time between detection checks)
-        settings.AptPeriod=7400; %[ms]
+        settings.AptPeriod=1000; %[ms]
         %Activates acquisition search grid plots or not in the APT spoofing
         %detection. 1 (active), 0 (not active)
         settings.AptPlots=1;
+        %Although settings.AptPlots is active, you might not desire to
+        %display them, for instance, if you want to save them directly without
+        %displaying them.
+        settings.AptShowPlots=0;
+        %Saves plots in C:\Users\erics\OneDrive\Documentos\MATLAB\TFG\Borre\Images
+        settings.AptSavePlots=0;
         %Number of channels per satellite 
         settings.AptNumberChannelsPerSat=2; %Recall that 1 channel (the first channel) will be used for tracking
         %APT threshold. How many times second peak shall be bigger than
@@ -248,7 +261,7 @@ switch signal_file
         %% Processing settings ====================================================
         % Number of milliseconds to be processed used 36000 + any transients (see
         % below - in Nav parameters) to ensure nav subframes are provided
-        settings.msToProcess        = 10000;        %[ms]
+        settings.msToProcess        = 5000;        %[ms]
 
         % Number of channels to be used for signal processing
         settings.maxNumSatToProcess   = 8;
@@ -259,7 +272,7 @@ switch signal_file
         % based only. 
         %Indicates at which file second the file is started to be read. Similar to the prior settings.skipNumberOfBytes but more intuitive. 
         %(settings.skipNumberOfBytes=settings.samplingFreq*settings.fileStartingReadingSecond)
-        settings.fileStartingReadingSecond=200; 
+        settings.fileStartingReadingSecond=150; 
         %settings.skipNumberOfBytes=0;
         
 
@@ -293,7 +306,7 @@ switch signal_file
         % Band around IF to search for satellite signal. Depends on max Doppler
         settings.acqSearchBand      = 14;
         % settings.acqSearchBand      = 14;           %[kHz]
-        settings.acqFreqStep=500; %[Hz]
+        settings.acqFreqStep=100; %[Hz]
         % Threshold for the signal presence decision rule
         settings.acqThreshold       = 3.5;
         % Activates acqusition search grid plots or not. 1 (active), 0 (not active)
@@ -341,15 +354,23 @@ switch signal_file
         %Indicates if the APT spoofing detection is ON (1) or OFF (0)
         settings.AptActive=1;
         %Indicates the period of the APT detection (time between detection checks)
-        settings.AptPeriod=3700; %[ms]
+        settings.AptPeriod=500; %[ms]
         %Activates acquisition search grid plots or not in the APT spoofing
         %detection. 1 (active), 0 (not active)
         settings.AptPlots=1;
+        %Although settings.AptPlots is active, you might not desire to
+        %display them, for instance, if you want to save them directly without
+        %displaying them.
+        settings.AptShowPlots=0;
+        %Saves plots in C:\Users\erics\OneDrive\Documentos\MATLAB\TFG\Borre\Images
+        settings.AptSavePlots=1;
+        
         %Number of channels per satellite 
         settings.AptNumberChannelsPerSat=2;
         %APT threshold. How many times second peak shall be bigger than
         %third peak
         settings.AptThreshold=1;
+        
         case 4%'TEXBAT_ds3'
         %% Processing settings ====================================================
         % Number of milliseconds to be processed used 36000 + any transients (see
@@ -399,7 +420,119 @@ switch signal_file
         % Band around IF to search for satellite signal. Depends on max Doppler
         settings.acqSearchBand      = 14;
         % settings.acqSearchBand      = 14;           %[kHz]
-        settings.acqFreqStep=500; %[Hz]
+        settings.acqFreqStep=100; %[Hz]
+        % Threshold for the signal presence decision rule
+        settings.acqThreshold       = 3.5;
+        % Activates acqusition search grid plots or not. 1 (active), 0 (not active)
+        settings.acqInitialPlots=0; 
+        %Activates acquisition fine frequency search (1) or not (0).
+        settings.acqFineFreqSearch=0;
+        %% Tracking loops settings ================================================
+        % Code tracking loop parameters
+        settings.dllDampingRatio         = 0.7;
+        settings.dllNoiseBandwidth       = 2;       %[Hz]
+        settings.dllCorrelatorSpacing    = 0.5;     %[chips]
+
+        % Carrier tracking loop parameters
+        settings.pllDampingRatio         = 0.7;
+        settings.pllNoiseBandwidth       = 25;      %[Hz]
+
+        %% Navigation solution settings ===========================================
+
+        % Period for calculating pseudoranges and position
+        settings.navSolPeriod       = 500;          %[ms]
+
+        % Elevation mask to exclude signals from satellites at low elevation
+        settings.elevationMask      = 10;           %[degrees 0 - 90]
+        % Enable/dissable use of tropospheric correction
+        settings.useTropCorr        = 1;            % 0 - Off
+                                                    % 1 - On
+
+        % True position of the antenna in UTM system (if known). Otherwise enter
+        % all NaN's and mean position will be used as a reference .
+        settings.truePosition.E     = nan;
+        settings.truePosition.N     = nan;
+        settings.truePosition.U     = nan;
+
+        %% Plot settings ==========================================================
+        % Enable/disable plotting of the tracking results for each channel
+        settings.plotTracking       = 1;            % 0 - Off
+                                                    % 1 - On
+
+        %% Constants ==============================================================
+
+        settings.c                  = 299792458;    % The speed of light, [m/s]
+        settings.startOffset        = 68.802;       %[ms] Initial sign. travel time
+        
+        %% APT detection settings ===========================================================
+        %Indicates if the APT spoofing detection is ON (1) or OFF (0)
+        settings.AptActive=1;
+        %Indicates the period of the APT detection (time between detection checks)
+        settings.AptPeriod=1000; %[ms]
+        %Activates acquisition search grid plots or not in the APT spoofing
+        %detection. 1 (active), 0 (not active)
+        settings.AptPlots=1;
+        %Although settings.AptPlots is active, you might not desire to
+        %display them, for instance, if you want to save them directly without
+        %displaying them.
+        settings.AptShowPlots=0;
+        %Saves plots in C:\Users\erics\OneDrive\Documentos\MATLAB\TFG\Borre\Images
+        settings.AptSavePlots=1;
+        %Number of channels per satellite 
+        settings.AptNumberChannelsPerSat=2;
+        %APT threshold. How many times second peak shall be bigger than
+        %third peak
+        settings.AptThreshold=1;
+        case 7%'TEXBAT_ds7'
+        %% Processing settings ====================================================
+        % Number of milliseconds to be processed used 36000 + any transients (see
+        % below - in Nav parameters) to ensure nav subframes are provided
+        settings.msToProcess        = 10000;        %[ms]
+
+        % Number of channels to be used for signal processing
+        settings.maxNumSatToProcess   = 8;
+
+        % Move the starting point of processing. Can be used to start the signal
+        % processing at any point in the data record (e.g. for long records). fseek
+        % function is used to move the file read point, therefore advance is byte
+        % based only. 
+        %Indicates at which file second the file is started to be read. Similar to the prior settings.skipNumberOfBytes but more intuitive. 
+        %(settings.skipNumberOfBytes=settings.samplingFreq*settings.fileStartingReadingSecond)
+        settings.fileStartingReadingSecond=110; %0.00000004
+        %settings.skipNumberOfBytes=0;
+        
+
+        %% Raw signal file name and other parameter ===============================
+        % This is a "default" name of the data file (signal record) to be used in
+        % the post-processing mode
+        settings.fileName           = ...
+            'D:\TexBat_spoofedsignals\ds7.bin';
+
+        % Data type used to store one sample
+        settings.dataType           = 'int16';
+        settings.dataFormat           = 'ishort'; %16 bit IQ format--> [I1, Q1, I2, Q2 ... In, Qn]
+        
+        % Intermediate, sampling and code frequencies
+        settings.IF                 = 0;%1575420000
+        settings.samplingFreq       = 25e6;     %[Hz]
+        % % Define number of chips in a code period
+        settings.codeFreqBasis      = 1.023e6;      %[Hz]
+        
+        % Define number of chips in a code period
+        settings.codeLength         = 1023;
+
+        %% Acquisition settings ===================================================
+        % Skips acquisition in the script postProcessing.m if set to 1
+        settings.skipAcquisition    = 1;
+        % List of satellites to look for. Some satellites can be excluded to speed
+        % up acquisition
+        settings.acqSatelliteList   = 1:32;         %[PRN numbers]
+        %List of satellites present/visible
+        settings.acqSatellitePresentList   = zeros(1,32);         %[PRN numbers]
+        % Band around IF to search for satellite signal. Depends on max Doppler
+        settings.acqSearchBand      = 14;
+        % settings.acqSearchBand      = 14;           %[kHz]
+        settings.acqFreqStep=100; %[Hz]
         % Threshold for the signal presence decision rule
         settings.acqThreshold       = 3.5;
         % Activates acqusition search grid plots or not. 1 (active), 0 (not active)
@@ -451,6 +584,12 @@ switch signal_file
         %Activates acquisition search grid plots or not in the APT spoofing
         %detection. 1 (active), 0 (not active)
         settings.AptPlots=1;
+        %Although settings.AptPlots is active, you might not desire to
+        %display them, for instance, if you want to save them directly without
+        %displaying them.
+        settings.AptShowPlots=0;
+        %Saves plots in C:\Users\erics\OneDrive\Documentos\MATLAB\TFG\Borre\Images
+        settings.AptSavePlots=1;
         %Number of channels per satellite 
         settings.AptNumberChannelsPerSat=2;
         %APT threshold. How many times second peak shall be bigger than
